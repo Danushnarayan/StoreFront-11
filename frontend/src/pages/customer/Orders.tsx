@@ -137,7 +137,6 @@ export default function Orders() {
  >
  {shortOrderId(order.order_id)}
  </span>
- <StatusBadge status={order.order_status} />
  <StatusBadge status={order.delivery_status || 'PENDING'} />
  </div>
  <p className="text-sm text-text-secondary">
@@ -205,11 +204,7 @@ export default function Orders() {
  </div>
  
  <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
- <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
- <div>
- <p className="text-xs font-medium text-text-secondary uppercase tracking-wider mb-2">Status</p>
- <StatusBadge status={selectedOrder.order_status} />
- </div>
+ <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
  <div>
  <p className="text-xs font-medium text-text-secondary uppercase tracking-wider mb-2">Delivery</p>
  <StatusBadge status={selectedOrder.delivery_status || 'PENDING'} />

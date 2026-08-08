@@ -56,6 +56,7 @@ export const useProcessPayment = () => {
  queryClient.invalidateQueries({ queryKey: ['orders'] });
  queryClient.invalidateQueries({ queryKey: ['admin', 'payments'] });
  queryClient.invalidateQueries({ queryKey: ['admin', 'orders'] });
+ queryClient.invalidateQueries({ queryKey: ['cart'] });
  },
  });
 };

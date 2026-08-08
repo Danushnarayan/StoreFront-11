@@ -37,7 +37,7 @@ export default function Orders() {
  (o.customer_email ? o.customer_email.toLowerCase().includes(search.toLowerCase()) : false));
  }
  if (statusFilter !== 'all') {
- match = match && o.order_status.toUpperCase() === statusFilter.toUpperCase();
+ match = match && ((o.delivery_status || 'PENDING').toUpperCase() === statusFilter.toUpperCase() || o.order_status.toUpperCase() === statusFilter.toUpperCase());
  }
  return match;
  }).sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()) : [];
@@ -82,10 +82,7 @@ export default function Orders() {
  header: 'Payment', 
  accessor: (item: Order) => <StatusBadge status={item.payment_status} />
  },
- { 
- header: 'Status', 
- accessor: (item: Order) => <StatusBadge status={item.order_status} />
- },
+
  { 
  header: 'Delivery', 
  accessor: (item: Order) => <StatusBadge status={item.delivery_status || 'PENDING'} />
@@ -152,7 +149,7 @@ export default function Orders() {
  onReset={() => setStatusFilter('all')}
  >
  <div>
- <label className="block text-sm font-medium text-text-secondary mb-2">Order Status</label>
+ <label className="block text-sm font-medium text-text-secondary mb-2">Delivery Status</label>
  <select
  value={statusFilter}
  onChange={(e) => setStatusFilter(e.target.value)}
@@ -160,7 +157,7 @@ export default function Orders() {
  >
  <option value="all">All Statuses</option>
  <option value="PENDING">Pending</option>
- <option value="PROCESSING">Processing</option>
+ <option value="ORDER_CONFIRMED">Order Confirmed</option>
  <option value="SHIPPED">Shipped</option>
  <option value="DELIVERED">Delivered</option>
  <option value="CANCELLED">Cancelled</option>
@@ -218,7 +215,6 @@ export default function Orders() {
  { label: 'User ID', value: selectedOrder.user_id },
  { label: 'Customer Email', value: selectedOrder.customer_email || 'N/A'},
  { label: 'Total Amount', value: formatCurrency(selectedOrder.total_amount) },
- { label: 'Order Status', value: selectedOrder.order_status },
  { label: 'Payment Status', value: selectedOrder.payment_status },
  { label: 'Created At', value: new Date(selectedOrder.created_at.replace('', 'T')).toLocaleString() },
  { label: 'Items', value: selectedOrder.items ? (
@@ -257,7 +253,7 @@ export default function Orders() {
  className="w-full bg-bg-secondary text-text-primary dark:text-white border border-border-subtle rounded-xl p-3 focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
  >
  <option className="bg-bg-secondary dark:text-white" value="PENDING" disabled>Pending Payment</option>
- <option className="bg-bg-secondary dark:text-white" value="ORDER_CONFIRMED" disabled={selectedOrder.delivery_status !== 'ORDER_CONFIRMED'}>Order Confirmed</option>
+ <option className="bg-bg-secondary dark:text-white" value="ORDER_CONFIRMED" disabled={selectedOrder.delivery_status !== 'ORDER_CONFIRMED' && !(selectedOrder.delivery_status === 'PENDING' && selectedOrder.payment_status === 'SUCCESS')}>Order Confirmed</option>
  <option className="bg-bg-secondary dark:text-white" value="SHIPPED" disabled={selectedOrder.delivery_status === 'PENDING'}>Shipped</option>
  <option className="bg-bg-secondary dark:text-white" value="DELIVERED" disabled={selectedOrder.delivery_status !== 'SHIPPED' && selectedOrder.delivery_status !== 'DELIVERED'}>Delivered</option>
  </select>

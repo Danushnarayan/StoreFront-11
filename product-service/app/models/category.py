@@ -30,7 +30,7 @@ class Category:
         self.updated_at = updated_at or self.created_at
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        data = {
             "product_id": self.category_id,  # Stored in product_id PK of danush_products_table
             "entity_type": "CATEGORY",
             "name": self.name,
@@ -44,6 +44,8 @@ class Category:
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
+        # Prevent DynamoDB ValidationException on empty strings
+        return {k: v for k, v in data.items() if v != ""}
 
     @staticmethod
     def from_dict(data: Dict[str, Any]) -> "Category":

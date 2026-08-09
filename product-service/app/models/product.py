@@ -22,8 +22,13 @@ class Product:
     def to_dict(self) -> Dict[str, Any]:
         """Converts the Product instance to a dictionary for DynamoDB storage."""
         data = asdict(self)
-        # Ensure Decimal type is preserved (asdict keeps it)
-        return data
+        
+        # Boto3 does not support floats, convert to Decimal
+        if isinstance(data.get("average_rating"), float):
+            data["average_rating"] = Decimal(str(data["average_rating"]))
+            
+        # Prevent DynamoDB ValidationException on empty strings
+        return {k: v for k, v in data.items() if v != ""}
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Product":

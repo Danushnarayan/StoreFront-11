@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Package, X, AlertCircle } from 'lucide-react';
+import { ShoppingBag, Package, X, AlertCircle, Download } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useOrders, useCancelOrder } from '../../hooks/useOrders';
 import { EmptyState } from '../../components/ui/EmptyState';
@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { formatCurrency } from '../../utils/currency';
 import { safeFormatDate } from '../../utils/date';
+import { generateInvoice } from '../../utils/generateInvoice';
 
 /** Shortens an Order ID to a readable format like ORD-20260723...41f6 */
 export function shortOrderId(id: string): string {
@@ -247,6 +248,15 @@ export default function Orders() {
  <div className="mt-6 pt-4 border-t border-border-subtle flex justify-between">
  <span className="font-semibold text-text-primary">Total</span>
  <span className="text-xl font-bold text-text-primary">{formatCurrency(selectedOrder.total_amount)}</span>
+ </div>
+ <div className="mt-6 flex justify-end">
+ <button
+ onClick={() => generateInvoice(selectedOrder)}
+ className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-medium transition-all shadow-soft"
+ >
+ <Download className="h-5 w-5" />
+ Download Invoice
+ </button>
  </div>
  </div>
 
